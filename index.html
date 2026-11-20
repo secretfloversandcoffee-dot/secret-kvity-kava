@@ -100,8 +100,6 @@
   @media(prefers-reduced-motion:reduce){.quote{transition:none}.quote.stretch{animation:none}}
 
   .card{cursor:pointer}
-  footer a{color:var(--muted);text-decoration:none}
-  footer a:hover{text-decoration:underline}
   .overlay{position:fixed;inset:0;z-index:60;background:rgba(22,17,14,.72);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:26px}
   .overlay[hidden]{display:none}
   .overlay-box{position:relative;background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:22px;max-width:980px;width:100%;max-height:88vh;overflow:auto;padding:42px 30px 30px;box-shadow:0 24px 70px rgba(0,0,0,.35)}
@@ -115,25 +113,6 @@
   .mi-body h3{font-size:22px;margin-bottom:4px}
   .mi-body p{font-size:16px;color:var(--muted)}
   @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-  .tabs{display:flex;gap:8px;margin-bottom:20px}
-  .tab{background:none;border:1px solid var(--line);color:var(--muted);font-family:inherit;font-size:19px;padding:8px 20px;border-radius:999px;cursor:pointer}
-  .tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
-  .admin-form{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px;align-items:flex-start}
-  .admin-form input[type=text],.admin-form textarea{flex:1;min-width:220px;background:var(--bg);border:1px solid var(--line);color:var(--text);font-family:inherit;font-size:17px;padding:10px 12px;border-radius:10px;outline:none}
-  .admin-form input[type=text]:focus,.admin-form textarea:focus{border-color:var(--accent)}
-  .admin-form textarea{resize:vertical}
-  .file-label{display:inline-flex;align-items:center;gap:8px;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:11px 16px;cursor:pointer;font-size:17px;color:var(--muted)}
-  .file-label:hover{border-color:var(--accent);color:var(--text)}
-  #admPreview{width:110px;height:110px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
-  .adm-hint{width:100%;color:var(--muted);font-size:16px;margin:2px 0 0}
-  .mi-del{display:inline-block;margin-top:8px;background:none;border:1px solid var(--line);color:var(--muted);font-family:inherit;font-size:15px;padding:4px 14px;border-radius:999px;cursor:pointer}
-  .mi-del:hover{color:#e28a97;border-color:#e28a97}
-
-  .login-box{max-width:430px}
-  .admin-form input[type=password]{flex:1;min-width:180px;background:var(--bg);border:1px solid var(--line);color:var(--text);font-family:inherit;font-size:17px;padding:10px 12px;border-radius:10px;outline:none}
-  .admin-form input[type=password]:focus{border-color:var(--accent)}
-  #loginErr{color:#e28a97}
-  .auth-sep{border:none;border-top:1px solid var(--line);margin:22px 0 14px}
 </style>
 </head>
 <body>
@@ -233,48 +212,7 @@
     <div class="menu-grid" id="menuGrid"></div>
   </div>
 </div>
-
-<div class="overlay" id="adminOverlay" hidden>
-  <div class="overlay-box">
-    <button class="ov-close" type="button" aria-label="Закрити">✕</button>
-    <h2>Адмін-панель</h2>
-    <div class="tabs">
-      <button class="tab on" type="button" data-tab="flowers">Квіти</button>
-      <button class="tab" type="button" data-tab="drinks">Напої</button>
-    </div>
-    <div class="admin-form">
-      <label class="file-label">Фото<input type="file" id="admPhoto" accept="image/*" hidden></label>
-      <img id="admPreview" alt="Обране фото" hidden>
-      <input type="text" id="admName" placeholder="Назва *">
-      <textarea id="admDesc" rows="2" placeholder="Опис (необов’язково)"></textarea>
-      <button class="btn" type="button" id="admAdd">Додати</button>
-      <p class="adm-hint" id="admHint"></p>
-    </div>
-    <div class="menu-grid" id="admList"></div>
-    <hr class="auth-sep">
-    <div class="admin-form">
-      <input type="text" id="newUser" placeholder="Нова пошта / юзернейм">
-      <input type="password" id="newPass" placeholder="Новий пароль" autocomplete="new-password">
-      <button class="btn ghost" type="button" id="saveAuth">Зберегти дані входу</button>
-    </div>
-    <button class="mi-del" type="button" id="logoutBtn">Вийти</button>
-  </div>
-</div>
-
-
-<div class="overlay" id="loginOverlay" hidden>
-  <div class="overlay-box login-box">
-    <button class="ov-close" type="button" aria-label="Закрити">✕</button>
-    <h2>Вхід до адмін-панелі</h2>
-    <form class="admin-form" id="loginForm">
-      <input type="text" id="loginUser" placeholder="Пошта або юзернейм" autocomplete="username">
-      <input type="password" id="loginPass" placeholder="Пароль" autocomplete="current-password">
-      <button class="btn" type="submit">Увійти</button>
-      <p class="adm-hint" id="loginErr"></p>
-    </form>
-  </div>
-</div>
-<footer>© 2026 Secret · квіти та кава · вул. Жилянська, 82/20Б, Київ · <a href="#" id="admLink">Адмін</a></footer>
+<footer>© 2026 Secret · квіти та кава · вул. Жилянська, 82/20Б, Київ</footer>
 
 <script>
 (function(){
@@ -359,39 +297,23 @@
   mark();loop();
   setTimeout(function(){twitch(quotes[0],0,token);},600);
 
-  /* ---------- меню та адмін-панель ---------- */
-  var LS='secret_menu_v1';
-  function loadData(){try{var d=JSON.parse(localStorage.getItem(LS));if(d&&typeof d==='object'&&Array.isArray(d.flowers)&&Array.isArray(d.drinks))return d;}catch(e){}return {flowers:[],drinks:[]};}
-  function saveData(d){try{localStorage.setItem(LS,JSON.stringify(d));}catch(e){alert('Сховище браузера переповнене — спробуйте фото меншого розміру.');}}
-  (function seed(){
-    if(localStorage.getItem(LS))return;
+  /* ---------- меню ---------- */
+  var MENU_DEFAULT={flowers:[],drinks:[]};
+  (function(){
     var imgs=document.querySelectorAll('#offer .card .media img');
-    var d={flowers:[],drinks:[]};
-    if(imgs[0])d.flowers.push({n:'Букет від Secret',d:'Свіжі квіти, зібрані з любов’ю — щодня нові композиції.',img:imgs[0].src});
-    if(imgs[1])d.drinks.push({n:'Капучино з лате-артом',d:'Еспресо з ніжною молочною піною.',img:imgs[1].src});
-    saveData(d);
+    if(imgs[0])MENU_DEFAULT.flowers.push({n:'Букет від Secret',d:'Свіжі квіти, зібрані з любов’ю — щодня нові композиції.',img:imgs[0].src});
+    if(imgs[1])MENU_DEFAULT.drinks.push({n:'Капучино з лате-артом',d:'Еспресо з ніжною молочною піною.',img:imgs[1].src});
   })();
-  function compress(file,cb){
-    var url=URL.createObjectURL(file);
-    var im=new Image();
-    im.onload=function(){
-      var max=900,w=im.width,h=im.height;
-      if(w>max||h>max){var k=Math.min(max/w,max/h);w=Math.max(1,Math.round(w*k));h=Math.max(1,Math.round(h*k));}
-      var c=document.createElement('canvas');c.width=w;c.height=h;
-      c.getContext('2d').drawImage(im,0,0,w,h);
-      cb(c.toDataURL('image/jpeg',0.72));
-      URL.revokeObjectURL(url);
-    };
-    im.onerror=function(){alert('Не вдалося прочитати фото.');};
-    im.src=url;
-  }
-  function itemEl(it,deletable,onDel){
+  var MENU_DATA=null;
+  fetch('menu.json?t='+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
+    if(d&&Array.isArray(d.flowers)&&Array.isArray(d.drinks))MENU_DATA=d;
+  }).catch(function(){});
+  function itemEl(it){
     var d=document.createElement('div');d.className='menu-item';
     if(it.img){var im=document.createElement('img');im.src=it.img;im.alt=it.n||'';d.appendChild(im);}
     var b=document.createElement('div');b.className='mi-body';
     var h=document.createElement('h3');h.textContent=it.n;b.appendChild(h);
     if(it.d){var p=document.createElement('p');p.textContent=it.d;b.appendChild(p);}
-    if(deletable){var del=document.createElement('button');del.type='button';del.className='mi-del';del.textContent='Видалити';del.onclick=onDel;b.appendChild(del);}
     d.appendChild(b);
     return d;
   }
@@ -399,112 +321,14 @@
     var g=document.getElementById('menuGrid');
     g.innerHTML='';
     document.getElementById('menuTitle').textContent=cat==='flowers'?'Меню квітів':'Меню напоїв';
-    var items=loadData()[cat];
-    if(!items.length){g.innerHTML='<p style="color:var(--muted)">Поки порожньо — додайте позиції в адмін-панелі.</p>';}
+    var items=(MENU_DATA&&MENU_DATA[cat])||MENU_DEFAULT[cat];
+    if(!items.length){g.innerHTML='<p style="color:var(--muted)">Поки порожньо.</p>';}
     items.forEach(function(it){g.appendChild(itemEl(it));});
     document.getElementById('menuOverlay').hidden=false;
-  }
-  var admCat='flowers';
-  function admRender(){
-    var d=loadData()[admCat];
-    var list=document.getElementById('admList');
-    list.innerHTML='';
-    document.getElementById('admHint').textContent=d.length?('У меню: '+d.length+' поз. — можна видалити або додати нові.'):'Поки порожньо — додайте першу позицію.';
-    d.forEach(function(it,idx){
-      list.appendChild(itemEl(it,true,function(){
-        var dd=loadData();dd[admCat].splice(idx,1);saveData(dd);admRender();
-      }));
-    });
   }
   var cards=document.querySelectorAll('#offer .card');
   if(cards[0])cards[0].addEventListener('click',function(){openMenu('flowers');});
   if(cards[1])cards[1].addEventListener('click',function(){openMenu('drinks');});
-  document.getElementById('admLink').addEventListener('click',function(e){
-    e.preventDefault();
-    if(isLogged()){admRender();document.getElementById('adminOverlay').hidden=false;}
-    else{document.getElementById('loginErr').textContent='';document.getElementById('loginOverlay').hidden=false;}
-  });
-  [].forEach.call(document.querySelectorAll('.tab'),function(t){
-    t.addEventListener('click',function(){
-      admCat=t.getAttribute('data-tab');
-      [].forEach.call(document.querySelectorAll('.tab'),function(x){x.className=x===t?'tab on':'tab';});
-      admRender();
-    });
-  });
-  document.getElementById('admPhoto').addEventListener('change',function(){
-    var f=this.files[0];
-    var pv=document.getElementById('admPreview');
-    if(f){pv.src=URL.createObjectURL(f);pv.hidden=false;}else{pv.hidden=true;}
-  });
-  document.getElementById('admAdd').addEventListener('click',function(){
-    var f=document.getElementById('admPhoto').files[0];
-    var name=document.getElementById('admName').value.trim();
-    var desc=document.getElementById('admDesc').value.trim();
-    if(!name){alert('Введіть назву.');return;}
-    if(!f){alert('Оберіть фото.');return;}
-    compress(f,function(dataUrl){
-      var d=loadData();
-      d[admCat].push({n:name,d:desc,img:dataUrl});
-      saveData(d);
-      admRender();
-      document.getElementById('admName').value='';
-      document.getElementById('admDesc').value='';
-      document.getElementById('admPhoto').value='';
-      document.getElementById('admPreview').hidden=true;
-    });
-  });
-
-  var AUTH_LS='secret_admin_auth', ON_LS='secret_admin_on';
-  var DEF_USER='admin', DEF_PASS='secret2026';
-  function sha256(txt){
-    if(window.crypto&&crypto.subtle&&crypto.subtle.digest){
-      return crypto.subtle.digest('SHA-256',new TextEncoder().encode(txt)).then(function(buf){
-        return [].map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2);}).join('');
-      });
-    }
-    return Promise.resolve('plain:'+txt);
-  }
-  function loadAuth(){try{var a=JSON.parse(localStorage.getItem(AUTH_LS));if(a&&typeof a==='object'&&a.user&&a.hash)return a;}catch(e){}return null;}
-  function isLogged(){return localStorage.getItem(ON_LS)==='1';}
-  document.getElementById('loginForm').addEventListener('submit',function(e){
-    e.preventDefault();
-    var u=document.getElementById('loginUser').value.trim();
-    var p=document.getElementById('loginPass').value;
-    if(!u||!p){document.getElementById('loginErr').textContent='Заповніть обидва поля.';return;}
-    var a=loadAuth();
-    sha256(p).then(function(h){
-      var ok;
-      if(a){ok=(u===a.user&&h===a.hash);}
-      else{
-        ok=(u===DEF_USER&&p===DEF_PASS);
-        if(ok){try{localStorage.setItem(AUTH_LS,JSON.stringify({user:DEF_USER,hash:h}));}catch(err){}}
-      }
-      if(ok){
-        localStorage.setItem(ON_LS,'1');
-        document.getElementById('loginErr').textContent='';
-        document.getElementById('loginOverlay').hidden=true;
-        document.getElementById('loginForm').reset();
-        admRender();
-        document.getElementById('adminOverlay').hidden=false;
-      }else{
-        document.getElementById('loginErr').textContent='Невірні дані для входу.';
-      }
-    });
-  });
-  document.getElementById('saveAuth').addEventListener('click',function(){
-    var u=document.getElementById('newUser').value.trim();
-    var p=document.getElementById('newPass').value;
-    if(!u||!p){alert('Введіть нові пошту/юзернейм і пароль.');return;}
-    sha256(p).then(function(h){
-      try{localStorage.setItem(AUTH_LS,JSON.stringify({user:u,hash:h}));}catch(e){}
-      document.getElementById('newUser').value='';document.getElementById('newPass').value='';
-      alert('Дані входу збережено.');
-    });
-  });
-  document.getElementById('logoutBtn').addEventListener('click',function(){
-    localStorage.removeItem(ON_LS);
-    document.getElementById('adminOverlay').hidden=true;
-  });
   [].forEach.call(document.querySelectorAll('.overlay'),function(ov){
     ov.addEventListener('click',function(e){if(e.target===ov)ov.hidden=true;});
     ov.querySelector('.ov-close').addEventListener('click',function(){ov.hidden=true;});

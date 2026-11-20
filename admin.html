@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Адмін — Secret</title>
+<style>
+  :root{ --bg:#1b1715; --surface:#262120; --text:#f5ece5; --muted:#b9a99f; --line:#3a3330; --accent:#e08aa0; --accent-dark:#eea3b5; --teal:#86c3b6; --gold:#d9b676; }
+  @media (prefers-color-scheme: light){
+    :root{ --bg:#fbf6f0; --surface:#ffffff; --text:#2f2522; --muted:#7d6d66; --accent:#c4677f; --accent-dark:#a34e66; --teal:#5f9e91; --gold:#b8955a; --line:#eddfd3; }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Marck Script','Bad Script',cursive;font-size:20px;background:var(--bg);color:var(--text);line-height:1.5;padding:30px 18px 60px}
+  .wrap{max-width:1000px;margin:0 auto}
+  h1{font-size:34px;margin-bottom:6px}
+  h2{font-size:26px;margin-bottom:14px}
+  .sub{color:var(--muted);font-size:17px;margin-bottom:26px}
+  a{color:var(--accent-dark)}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:30px 26px;margin-bottom:26px;box-shadow:0 10px 30px rgba(60,30,20,.07)}
+  .tabs{display:flex;gap:8px;margin-bottom:20px}
+  .tab{background:none;border:1px solid var(--line);color:var(--muted);font-family:inherit;font-size:19px;padding:8px 20px;border-radius:999px;cursor:pointer}
+  .tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  form.row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start}
+  input[type=text],input[type=password],textarea{flex:1;min-width:200px;background:var(--bg);border:1px solid var(--line);color:var(--text);font-family:inherit;font-size:17px;padding:10px 12px;border-radius:10px;outline:none}
+  input:focus,textarea:focus{border-color:var(--accent)}
+  textarea{resize:vertical}
+  .file-label{display:inline-flex;align-items:center;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:11px 16px;cursor:pointer;font-size:17px;color:var(--muted)}
+  .file-label:hover{border-color:var(--accent);color:var(--text)}
+  .btn{display:inline-block;background:var(--accent);color:#fff;border:none;font-family:inherit;font-size:18px;padding:10px 22px;border-radius:999px;cursor:pointer}
+  .btn:hover{background:var(--accent-dark)}
+  .btn.ghost{background:none;border:1px solid var(--line);color:var(--muted)}
+  .btn.ghost:hover{color:var(--text)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+  .item{position:relative;background:var(--bg);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .item img{width:100%;height:150px;object-fit:cover;display:block}
+  .item .b{padding:12px 14px 14px}
+  .item h3{font-size:21px;margin-bottom:4px}
+  .item p{font-size:16px;color:var(--muted)}
+  .del{display:inline-block;margin-top:8px;background:none;border:1px solid var(--line);color:var(--muted);font-family:inherit;font-size:15px;padding:4px 14px;border-radius:999px;cursor:pointer}
+  .del:hover{color:#e28a97;border-color:#e28a97}
+  .hint{color:var(--muted);font-size:16px;margin:4px 0 0;width:100%}
+  .status{font-size:17px;margin-top:12px;min-height:24px}
+  .ok{color:var(--teal)}
+  .err{color:#e28a97}
+  #preview{width:110px;height:110px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+  .small{font-size:15px;color:var(--muted)}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Адмін-панель · Secret</h1>
+  <p class="sub">Керування меню квітів і напоїв сайту <a href="https://secretfloversandcoffee-dot.github.io/secret-kvity-kava/" target="_blank" rel="noopener">secret-kvity-kava</a></p>
+
+  <div class="panel" id="loginPanel">
+    <h2>Вхід</h2>
+    <form class="row" id="loginForm">
+      <input type="text" id="loginUser" placeholder="Пошта або юзернейм" autocomplete="username">
+      <input type="password" id="loginPass" placeholder="Пароль" autocomplete="current-password">
+      <button class="btn" type="submit">Увійти</button>
+      <p class="hint err" id="loginErr"></p>
+    </form>
+  </div>
+
+  <div id="mainPanel" hidden>
+    <div class="panel">
+      <div class="tabs">
+        <button class="tab on" type="button" data-tab="flowers">Квіти</button>
+        <button class="tab" type="button" data-tab="drinks">Напої</button>
+        <span class="small" style="align-self:center;margin-left:auto" id="draftNote"></span>
+      </div>
+      <form class="row" id="addForm">
+        <label class="file-label">Фото<input type="file" id="photo" accept="image/*" hidden></label>
+        <img id="preview" alt="Обране фото" hidden>
+        <input type="text" id="name" placeholder="Назва *">
+        <textarea id="desc" rows="2" placeholder="Опис (необов’язково)"></textarea>
+        <button class="btn" type="submit">Додати</button>
+        <p class="hint" id="listHint"></p>
+      </form>
+      <div class="grid" id="list"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Публікація</h2>
+      <p class="sub" style="margin-bottom:12px">Зміни потрапляють на сайт тільки після натискання «Опублікувати меню».</p>
+      <form class="row" id="pubForm">
+        <input type="password" id="token" placeholder="GitHub токен (зберігається тільки в цьому браузері)" autocomplete="off">
+        <button class="btn" type="submit" id="pubBtn">Опублікувати меню</button>
+      </form>
+      <p class="hint">Токен: GitHub → Settings → Developer settings → Fine-grained tokens → Generate new → тільки репозиторій secret-kvity-kava → дозвіл Contents: Read and write.</p>
+      <p class="status" id="status"></p>
+    </div>
+
+    <div class="panel">
+      <h2>Дані входу</h2>
+      <form class="row" id="authForm">
+        <input type="text" id="newUser" placeholder="Нова пошта / юзернейм" autocomplete="off">
+        <input type="password" id="newPass" placeholder="Новий пароль" autocomplete="new-password">
+        <button class="btn ghost" type="submit">Зберегти</button>
+      </form>
+      <p style="margin-top:12px"><button class="del" type="button" id="logoutBtn">Вийти</button></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var LS_AUTH='secret_admin_auth', LS_ON='secret_admin_on', LS_TOKEN='secret_gh_token', LS_DRAFT='secret_admin_draft';
+  var DEF_USER='admin', DEF_PASS='secret2026';
+  var OWNER='secretfloversandcoffee-dot', REPO='secret-kvity-kava';
+  var state={flowers:[],drinks:[]}, cat='flowers';
+  function $(id){return document.getElementById(id);}
+  function sha256(txt){
+    if(window.crypto&&crypto.subtle&&crypto.subtle.digest){
+      return crypto.subtle.digest('SHA-256',new TextEncoder().encode(txt)).then(function(buf){
+        return [].map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2);}).join('');
+      });
+    }
+    return Promise.resolve('plain:'+txt);
+  }
+  function loadAuth(){try{var a=JSON.parse(localStorage.getItem(LS_AUTH));if(a&&typeof a==='object'&&a.user&&a.hash)return a;}catch(e){}return null;}
+  function isLogged(){return localStorage.getItem(LS_ON)==='1';}
+  function setStatus(txt,ok){var el=$('status');el.textContent=txt;el.className='status '+(ok?'ok':'err');}
+
+  $('loginForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    var u=$('loginUser').value.trim(), p=$('loginPass').value;
+    if(!u||!p){$('loginErr').textContent='Заповніть обидва поля.';return;}
+    var a=loadAuth();
+    sha256(p).then(function(h){
+      var ok;
+      if(a){ok=(u===a.user&&h===a.hash);}
+      else{
+        ok=(u===DEF_USER&&p===DEF_PASS);
+        if(ok){try{localStorage.setItem(LS_AUTH,JSON.stringify({user:DEF_USER,hash:h}));}catch(err){}}
+      }
+      if(ok){
+        localStorage.setItem(LS_ON,'1');
+        $('loginErr').textContent='';
+        $('loginForm').reset();
+        enter();
+      }else{
+        $('loginErr').textContent='Невірні дані для входу.';
+      }
+    });
+  });
+
+  function enter(){
+    $('loginPanel').hidden=true;
+    $('mainPanel').hidden=false;
+    if($('token').value){}else{$('token').value=localStorage.getItem(LS_TOKEN)||'';}
+    loadState();
+  }
+  function loadState(){
+    fetch('menu.json?t='+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
+      if(d&&Array.isArray(d.flowers)&&Array.isArray(d.drinks)){state=d;saveDraft();}
+      else throw 0;
+    }).catch(function(){
+      state=loadDraft();
+    }).then(render);
+  }
+  function loadDraft(){
+    try{var d=JSON.parse(localStorage.getItem(LS_DRAFT));if(d&&Array.isArray(d.flowers)&&Array.isArray(d.drinks))return d;}catch(e){}
+    return {flowers:[],drinks:[]};
+  }
+  function saveDraft(){try{localStorage.setItem(LS_DRAFT,JSON.stringify(state));}catch(e){}}
+  function render(){
+    var list=$('list'), d=state[cat];
+    list.innerHTML='';
+    $('listHint').textContent=d.length?('У меню: '+d.length+' поз.'):'Поки порожньо — додайте першу позицію.';
+    d.forEach(function(it,idx){
+      var el=document.createElement('div');el.className='item';
+      if(it.img){var im=document.createElement('img');im.src=it.img;im.alt=it.n||'';el.appendChild(im);}
+      var b=document.createElement('div');b.className='b';
+      var h=document.createElement('h3');h.textContent=it.n;b.appendChild(h);
+      if(it.d){var p=document.createElement('p');p.textContent=it.d;b.appendChild(p);}
+      var del=document.createElement('button');del.type='button';del.className='del';del.textContent='Видалити';
+      del.onclick=function(){state[cat].splice(idx,1);saveDraft();render();};
+      b.appendChild(del);
+      el.appendChild(b);
+      list.appendChild(el);
+    });
+    $('draftNote').textContent='Зміни збережено локально. Не забудьте опублікувати.';
+  }
+  [].forEach.call(document.querySelectorAll('.tab'),function(t){
+    t.addEventListener('click',function(){
+      cat=t.getAttribute('data-tab');
+      [].forEach.call(document.querySelectorAll('.tab'),function(x){x.className=x===t?'tab on':'tab';});
+      render();
+    });
+  });
+  $('photo').addEventListener('change',function(){
+    var f=this.files[0], pv=$('preview');
+    if(f){pv.src=URL.createObjectURL(f);pv.hidden=false;}else{pv.hidden=true;}
+  });
+  $('addForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    var f=$('photo').files[0];
+    var name=$('name').value.trim();
+    var desc=$('desc').value.trim();
+    if(!name){alert('Введіть назву.');return;}
+    if(!f){alert('Оберіть фото.');return;}
+    var url=URL.createObjectURL(f);
+    var im=new Image();
+    im.onload=function(){
+      var max=900,w=im.width,h=im.height;
+      if(w>max||h>max){var k=Math.min(max/w,max/h);w=Math.max(1,Math.round(w*k));h=Math.max(1,Math.round(h*k));}
+      var c=document.createElement('canvas');c.width=w;c.height=h;
+      c.getContext('2d').drawImage(im,0,0,w,h);
+      state[cat].push({n:name,d:desc,img:c.toDataURL('image/jpeg',0.72)});
+      saveDraft();render();
+      $('name').value='';$('desc').value='';$('photo').value='';$('preview').hidden=true;
+      URL.revokeObjectURL(url);
+    };
+    im.onerror=function(){alert('Не вдалося прочитати фото.');};
+    im.src=url;
+  });
+  $('pubForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    var t=$('token').value.trim();
+    if(!t){setStatus('Вставте GitHub токен у поле вище.',false);return;}
+    try{localStorage.setItem(LS_TOKEN,t);}catch(err){}
+    setStatus('Публікую…',false);
+    var json=JSON.stringify(state);
+    var content=btoa(unescape(encodeURIComponent(json)));
+    var api='https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/menu.json';
+    fetch(api,{headers:{'Authorization':'Bearer '+t,'Accept':'application/vnd.github+json'}})
+      .then(function(r){if(!r.ok)throw new Error('GET '+r.status);return r.json();})
+      .then(function(d){
+        var body={message:'Оновлення меню',content:content,branch:'main'};
+        if(d&&d.sha)body.sha=d.sha;
+        return fetch(api,{method:'PUT',headers:{'Authorization':'Bearer '+t,'Accept':'application/vnd.github+json','Content-Type':'application/json'},body:JSON.stringify(body)});
+      })
+      .then(function(r){if(!r.ok)throw new Error('PUT '+r.status);setStatus('Опубліковано! Сайт оновиться за 1–10 хвилин.',true);})
+      .catch(function(err){setStatus('Помилка публікації: '+err.message+' — перевірте токен.',false);});
+  });
+  $('authForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    var u=$('newUser').value.trim(), p=$('newPass').value;
+    if(!u||!p){alert('Введіть нові пошту/юзернейм і пароль.');return;}
+    sha256(p).then(function(h){
+      try{localStorage.setItem(LS_AUTH,JSON.stringify({user:u,hash:h}));}catch(err){}
+      $('newUser').value='';$('newPass').value='';
+      alert('Дані входу збережено.');
+    });
+  });
+  $('logoutBtn').addEventListener('click',function(){
+    localStorage.removeItem(LS_ON);
+    $('mainPanel').hidden=true;
+    $('loginPanel').hidden=false;
+  });
+  if(isLogged()){enter();}
+})();
+</script>
+</body>
+</html>
