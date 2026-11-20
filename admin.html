@@ -46,6 +46,7 @@
   #preview{width:110px;height:110px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
   .small{font-size:15px;color:var(--muted)}
   [hidden]{display:none!important}
+  .item .b input,.item .b textarea{display:block;width:100%;margin-bottom:8px;min-width:0;background:var(--surface);font-size:16px}
 </style>
 </head>
 <body>
@@ -79,6 +80,11 @@
         <p class="hint" id="listHint"></p>
       </form>
       <div class="grid" id="list"></div>
+      <div id="coffeeBlock" hidden>
+        <h3 style="margin:26px 0 4px">Кавове меню (наливання)</h3>
+        <p class="hint">Ці напої показуються на сайті з анімацією наливання — редагуйте назву та опис.</p>
+        <div class="grid" id="coffeeList" style="margin-top:10px"></div>
+      </div>
     </div>
 
     <div class="panel">
@@ -109,7 +115,7 @@
   var LS_AUTH='secret_admin_auth', LS_ON='secret_admin_on', LS_TOKEN='secret_gh_token', LS_DRAFT='secret_admin_draft';
   var DEF_USER='admin', DEF_PASS='secret2026';
   var OWNER='secretfloversandcoffee-dot', REPO='secret-kvity-kava';
-  var state={flowers:[],drinks:[]}, cat='flowers';
+  var state={flowers:[],drinks:[],coffee:[]}, cat='flowers';
   function $(id){return document.getElementById(id);}
   function sha256(txt){
     if(window.crypto&&crypto.subtle&&crypto.subtle.digest){
@@ -154,15 +160,15 @@
   }
   function loadState(){
     fetch('menu.json?t='+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
-      if(d&&Array.isArray(d.flowers)&&Array.isArray(d.drinks)){state=d;saveDraft();}
+      if(d&&Array.isArray(d.flowers)&&Array.isArray(d.drinks)){state={flowers:d.flowers,drinks:d.drinks,coffee:Array.isArray(d.coffee)?d.coffee:[]};saveDraft();}
       else throw 0;
     }).catch(function(){
       state=loadDraft();
     }).then(render);
   }
   function loadDraft(){
-    try{var d=JSON.parse(localStorage.getItem(LS_DRAFT));if(d&&Array.isArray(d.flowers)&&Array.isArray(d.drinks))return d;}catch(e){}
-    return {flowers:[],drinks:[]};
+    try{var d=JSON.parse(localStorage.getItem(LS_DRAFT));if(d&&Array.isArray(d.flowers)&&Array.isArray(d.drinks))return {flowers:d.flowers,drinks:d.drinks,coffee:Array.isArray(d.coffee)?d.coffee:[]};}catch(e){}
+    return {flowers:[],drinks:[],coffee:[]};
   }
   function saveDraft(){try{localStorage.setItem(LS_DRAFT,JSON.stringify(state));}catch(e){}}
   function render(){
@@ -181,7 +187,27 @@
       el.appendChild(b);
       list.appendChild(el);
     });
+    var cb=$('coffeeBlock');
+    if(cat==='drinks'){cb.hidden=false;renderCoffee();}else{cb.hidden=true;}
     $('draftNote').textContent='Зміни збережено локально. Не забудьте опублікувати.';
+  }
+  function renderCoffee(){
+    var list=$('coffeeList');
+    list.innerHTML='';
+    if(!state.coffee.length){list.innerHTML='<p class="hint">Кавових напоїв поки немає.</p>';return;}
+    state.coffee.forEach(function(it,idx){
+      var el=document.createElement('div');el.className='item';
+      var b=document.createElement('div');b.className='b';
+      var nm=document.createElement('input');nm.type='text';nm.value=it.n||'';nm.placeholder='Назва *';
+      nm.addEventListener('input',function(){state.coffee[idx].n=nm.value.trim();saveDraft();});
+      var ds=document.createElement('textarea');ds.rows=2;ds.value=it.d||'';ds.placeholder='Опис (необов’язково)';
+      ds.addEventListener('input',function(){state.coffee[idx].d=ds.value.trim();saveDraft();});
+      var del=document.createElement('button');del.type='button';del.className='del';del.textContent='Видалити';
+      del.onclick=function(){state.coffee.splice(idx,1);saveDraft();render();};
+      b.appendChild(nm);b.appendChild(ds);b.appendChild(del);
+      el.appendChild(b);
+      list.appendChild(el);
+    });
   }
   [].forEach.call(document.querySelectorAll('.tab'),function(t){
     t.addEventListener('click',function(){
