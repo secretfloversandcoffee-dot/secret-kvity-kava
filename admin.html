@@ -25,16 +25,21 @@
   input[type=text],input[type=password],textarea{flex:1;min-width:200px;background:var(--bg);border:1px solid var(--line);color:var(--text);font-family:inherit;font-size:17px;padding:10px 12px;border-radius:10px;outline:none}
   input:focus,textarea:focus{border-color:var(--accent)}
   textarea{resize:vertical}
+  select,input[type=number]{background:var(--bg);border:1px solid var(--line);color:var(--text);font-family:inherit;font-size:17px;padding:10px 12px;border-radius:10px;outline:none}
+  select:focus,input[type=number]:focus{border-color:var(--accent)}
+  input[type=number]{width:110px;min-width:0;flex:none}
   .file-label{display:inline-flex;align-items:center;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:11px 16px;cursor:pointer;font-size:17px;color:var(--muted)}
   .file-label:hover{border-color:var(--accent);color:var(--text)}
+  #sPreview{width:110px;height:110px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
   .btn{display:inline-block;background:var(--accent);color:#fff;border:none;font-family:inherit;font-size:18px;padding:10px 22px;border-radius:999px;cursor:pointer}
   .btn:hover{background:var(--accent-dark)}
   .btn.ghost{background:none;border:1px solid var(--line);color:var(--muted)}
   .btn.ghost:hover{color:var(--text)}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+  .btn.small{font-size:15px;padding:7px 14px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
   .item{position:relative;background:var(--bg);border:1px solid var(--line);border-radius:16px;overflow:hidden}
   .item img{width:100%;height:150px;object-fit:cover;display:block}
-  .item .b{padding:12px 14px 14px}
+  .item .b{padding:14px 16px 16px}
   .item h3{font-size:21px;margin-bottom:4px}
   .item p{font-size:16px;color:var(--muted)}
   .del{display:inline-block;margin-top:8px;background:none;border:1px solid var(--line);color:var(--muted);font-family:inherit;font-size:15px;padding:4px 14px;border-radius:999px;cursor:pointer}
@@ -43,16 +48,29 @@
   .status{font-size:17px;margin-top:12px;min-height:24px}
   .ok{color:var(--teal)}
   .err{color:#e28a97}
-  #preview{width:110px;height:110px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
   .small{font-size:15px;color:var(--muted)}
   [hidden]{display:none!important}
   .item .b input,.item .b textarea{display:block;width:100%;margin-bottom:8px;min-width:0;background:var(--surface);font-size:16px}
+  .item .b input[type=number]{width:100%}
+  .badge{display:inline-block;font-size:14px;padding:3px 12px;border-radius:999px;color:#fff;margin-bottom:8px}
+  .stats{display:flex;gap:8px;margin:10px 0}
+  .stat{flex:1;text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 4px}
+  .stat b{display:block;font-size:22px}
+  .stat span{font-size:13px;color:var(--muted)}
+  .stat.rem b{color:var(--teal)}
+  .stat.rem.out b{color:#e28a97}
+  .srow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+  .srow label{font-size:15px;color:var(--muted)}
+  .srow input[type=number]{width:80px}
+  .stocksum{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 16px}
+  .stocksum .chip{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:6px 16px;font-size:16px}
+  .stocksum .chip b{color:var(--accent-dark)}
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>Адмін-панель · Secret</h1>
-  <p class="sub">Керування меню квітів і напоїв сайту <a href="https://secretfloversandcoffee-dot.github.io/secret-kvity-kava/" target="_blank" rel="noopener">secret-kvity-kava</a></p>
+  <p class="sub">Склад квітів і кавове меню сайту <a href="https://secretfloversandcoffee-dot.github.io/secret-kvity-kava/" target="_blank" rel="noopener">secret-kvity-kava</a></p>
 
   <div class="panel" id="loginPanel">
     <h2>Вхід</h2>
@@ -67,21 +85,33 @@
   <div id="mainPanel" hidden>
     <div class="panel">
       <div class="tabs">
-        <button class="tab on" type="button" data-tab="flowers">Квіти</button>
-        <button class="tab" type="button" data-tab="drinks">Напої</button>
+        <button class="tab on" type="button" data-tab="stock">Квіти · склад</button>
+        <button class="tab" type="button" data-tab="coffee">Кава</button>
         <span class="small" style="align-self:center;margin-left:auto" id="draftNote"></span>
       </div>
-      <form class="row" id="addForm">
-        <label class="file-label">Фото<input type="file" id="photo" accept="image/*" hidden></label>
-        <img id="preview" alt="Обране фото" hidden>
-        <input type="text" id="name" placeholder="Назва *">
-        <textarea id="desc" rows="2" placeholder="Опис (необов’язково)"></textarea>
-        <button class="btn" type="submit">Додати</button>
-        <p class="hint" id="listHint"></p>
-      </form>
-      <div class="grid" id="list"></div>
+
+      <div id="stockBlock">
+        <div class="stocksum" id="stockSum"></div>
+        <form class="row" id="stockForm">
+          <label class="file-label">Фото *<input type="file" id="sPhoto" accept="image/*" hidden></label>
+          <img id="sPreview" alt="Обране фото" hidden>
+          <input type="text" id="sName" placeholder="Назва квітки *">
+          <input type="number" id="sPrice" min="0" step="1" placeholder="Ціна, грн *">
+          <select id="sCat" aria-label="Папка">
+            <option value="roses">Троянди</option>
+            <option value="peonies">Піони</option>
+            <option value="tulips">Тюльпани</option>
+            <option value="daisies">Ромашки</option>
+          </select>
+          <input type="number" id="sQty" min="1" step="1" value="1" aria-label="Кількість, шт">
+          <button class="btn" type="submit">Додати на склад</button>
+          <p class="hint" id="stockHint">Фото, назва, ціна за штуку, папка та кількість — залишок одразу з’явиться на сайті.</p>
+        </form>
+        <div class="grid" id="stockList" style="margin-top:16px"></div>
+      </div>
+
       <div id="coffeeBlock" hidden>
-        <h3 style="margin:26px 0 4px">Кавове меню (наливання)</h3>
+        <h3 style="margin:0 0 4px">Кавове меню (наливання)</h3>
         <p class="hint">Ці напої показуються на сайті з анімацією наливання — редагуйте назву та опис.</p>
         <div class="grid" id="coffeeList" style="margin-top:10px"></div>
       </div>
@@ -115,7 +145,8 @@
   var LS_AUTH='secret_admin_auth', LS_ON='secret_admin_on', LS_TOKEN='secret_gh_token', LS_DRAFT='secret_admin_draft';
   var DEF_USER='admin', DEF_PASS='secret2026';
   var OWNER='secretfloversandcoffee-dot', REPO='secret-kvity-kava';
-  var state={flowers:[],drinks:[],coffee:[]}, cat='flowers';
+  var CATS={roses:{label:'Троянди',color:'#c4677f'},peonies:{label:'Піони',color:'#d98ba3'},tulips:{label:'Тюльпани',color:'#e0785a'},daisies:{label:'Ромашки',color:'#a8933a'}};
+  var state={flowers:[],drinks:[],coffee:[],stock:[]}, cat='stock';
   function $(id){return document.getElementById(id);}
   function sha256(txt){
     if(window.crypto&&crypto.subtle&&crypto.subtle.digest){
@@ -128,6 +159,7 @@
   function loadAuth(){try{var a=JSON.parse(localStorage.getItem(LS_AUTH));if(a&&typeof a==='object'&&a.user&&a.hash)return a;}catch(e){}return null;}
   function isLogged(){return localStorage.getItem(LS_ON)==='1';}
   function setStatus(txt,ok){var el=$('status');el.textContent=txt;el.className='status '+(ok?'ok':'err');}
+  function rem(it){return Math.max(0,(it.total||0)-(it.sold||0));}
 
   $('loginForm').addEventListener('submit',function(e){
     e.preventDefault();
@@ -160,36 +192,62 @@
   }
   function loadState(){
     fetch('menu.json?t='+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
-      if(d&&Array.isArray(d.flowers)&&Array.isArray(d.drinks)){state={flowers:d.flowers,drinks:d.drinks,coffee:Array.isArray(d.coffee)?d.coffee:[]};saveDraft();}
+      if(d&&Array.isArray(d.flowers)&&Array.isArray(d.drinks)){state={flowers:d.flowers,drinks:d.drinks,coffee:Array.isArray(d.coffee)?d.coffee:[],stock:Array.isArray(d.stock)?d.stock:[]};saveDraft();}
       else throw 0;
     }).catch(function(){
       state=loadDraft();
     }).then(render);
   }
   function loadDraft(){
-    try{var d=JSON.parse(localStorage.getItem(LS_DRAFT));if(d&&Array.isArray(d.flowers)&&Array.isArray(d.drinks))return {flowers:d.flowers,drinks:d.drinks,coffee:Array.isArray(d.coffee)?d.coffee:[]};}catch(e){}
-    return {flowers:[],drinks:[],coffee:[]};
+    try{var d=JSON.parse(localStorage.getItem(LS_DRAFT));if(d&&Array.isArray(d.flowers)&&Array.isArray(d.drinks))return {flowers:d.flowers,drinks:d.drinks,coffee:Array.isArray(d.coffee)?d.coffee:[],stock:Array.isArray(d.stock)?d.stock:[]};}catch(e){}
+    return {flowers:[],drinks:[],coffee:[],stock:[]};
   }
   function saveDraft(){try{localStorage.setItem(LS_DRAFT,JSON.stringify(state));}catch(e){}}
+
   function render(){
-    var list=$('list'), d=state[cat];
-    list.innerHTML='';
-    $('listHint').textContent=d.length?('У меню: '+d.length+' поз.'):'Поки порожньо — додайте першу позицію.';
-    d.forEach(function(it,idx){
-      var el=document.createElement('div');el.className='item';
-      if(it.img){var im=document.createElement('img');im.src=it.img;im.alt=it.n||'';el.appendChild(im);}
-      var b=document.createElement('div');b.className='b';
-      var h=document.createElement('h3');h.textContent=it.n;b.appendChild(h);
-      if(it.d){var p=document.createElement('p');p.textContent=it.d;b.appendChild(p);}
-      var del=document.createElement('button');del.type='button';del.className='del';del.textContent='Видалити';
-      del.onclick=function(){state[cat].splice(idx,1);saveDraft();render();};
-      b.appendChild(del);
-      el.appendChild(b);
-      list.appendChild(el);
-    });
-    var cb=$('coffeeBlock');
-    if(cat==='drinks'){cb.hidden=false;renderCoffee();}else{cb.hidden=true;}
+    var isStock=(cat==='stock');
+    $('stockBlock').hidden=!isStock;
+    $('coffeeBlock').hidden=isStock;
+    if(isStock)renderStock();else renderCoffee();
     $('draftNote').textContent='Зміни збережено локально. Не забудьте опублікувати.';
+  }
+  function renderStock(){
+    var sum=$('stockSum'),tot=0,sold=0,left=0;
+    state.stock.forEach(function(it){tot+=it.total||0;sold+=it.sold||0;left+=rem(it);});
+    sum.innerHTML='<span class="chip">На складі: <b>'+left+' шт</b></span><span class="chip">Продано: <b>'+sold+' шт</b></span><span class="chip">Всього було: <b>'+tot+' шт</b></span><span class="chip">Позицій: <b>'+state.stock.length+'</b></span>';
+    var list=$('stockList');list.innerHTML='';
+    $('stockHint').textContent=state.stock.length?'Залишок = всього − продано. Сайт показує саме залишок.':'Поки порожньо — додайте першу квітку вище.';
+    state.stock.forEach(function(it,idx){
+      var c=CATS[it.cat]||CATS.roses;
+      var el=document.createElement('div');el.className='item';
+      if(it.img){var ph=document.createElement('img');ph.src=it.img;ph.alt=it.n||'';el.appendChild(ph);}
+      var b=document.createElement('div');b.className='b';
+      var badge=document.createElement('span');badge.className='badge';badge.style.background=c.color;badge.textContent=c.label;b.appendChild(badge);
+      var nm=document.createElement('input');nm.type='text';nm.value=it.n||'';nm.placeholder='Назва *';
+      nm.addEventListener('input',function(){state.stock[idx].n=nm.value.trim();saveDraft();});
+      b.appendChild(nm);
+      var pr=document.createElement('input');pr.type='number';pr.min='0';pr.step='1';pr.value=it.price||0;pr.placeholder='Ціна, грн';
+      pr.addEventListener('input',function(){state.stock[idx].price=Math.max(0,parseInt(pr.value,10)||0);saveDraft();});
+      b.appendChild(pr);
+      var r=rem(it);
+      var stats=document.createElement('div');stats.className='stats';
+      stats.innerHTML='<div class="stat"><b>'+(it.total||0)+'</b><span>всього</span></div><div class="stat"><b>'+(it.sold||0)+'</b><span>продано</span></div><div class="stat rem'+(r>0?'':' out')+'"><b>'+r+'</b><span>залишок</span></div>';
+      b.appendChild(stats);
+      var row=document.createElement('div');row.className='srow';
+      var q=document.createElement('input');q.type='number';q.min='1';q.step='1';q.value='1';q.setAttribute('aria-label','Кількість, шт');
+      var plus=document.createElement('button');plus.type='button';plus.className='btn ghost small';plus.textContent='＋ партія';
+      plus.title='Додати кількість до «всього»';
+      plus.onclick=function(){var n=Math.max(1,parseInt(q.value,10)||1);state.stock[idx].total=(state.stock[idx].total||0)+n;saveDraft();render();};
+      var sell=document.createElement('button');sell.type='button';sell.className='btn small';sell.textContent='Продано';
+      sell.title='Записати продаж — зменшить залишок';
+      sell.onclick=function(){var n=Math.max(1,parseInt(q.value,10)||1);state.stock[idx].sold=Math.min(state.stock[idx].total||0,(state.stock[idx].sold||0)+n);saveDraft();render();};
+      row.appendChild(q);row.appendChild(plus);row.appendChild(sell);
+      b.appendChild(row);
+      var del=document.createElement('button');del.type='button';del.className='del';del.textContent='Видалити';
+      del.onclick=function(){state.stock.splice(idx,1);saveDraft();render();};
+      b.appendChild(del);
+      el.appendChild(b);list.appendChild(el);
+    });
   }
   function renderCoffee(){
     var list=$('coffeeList');
@@ -216,30 +274,33 @@
       render();
     });
   });
-  $('photo').addEventListener('change',function(){
-    var f=this.files[0], pv=$('preview');
+  $('sPhoto').addEventListener('change',function(){
+    var f=this.files[0],pv=$('sPreview');
     if(f){pv.src=URL.createObjectURL(f);pv.hidden=false;}else{pv.hidden=true;}
   });
-  $('addForm').addEventListener('submit',function(e){
+  $('stockForm').addEventListener('submit',function(e){
     e.preventDefault();
-    var f=$('photo').files[0];
-    var name=$('name').value.trim();
-    var desc=$('desc').value.trim();
-    if(!name){alert('Введіть назву.');return;}
-    if(!f){alert('Оберіть фото.');return;}
+    var name=$('sName').value.trim();
+    var price=Math.max(0,parseInt($('sPrice').value,10)||0);
+    var qty=Math.max(1,parseInt($('sQty').value,10)||1);
+    var c=$('sCat').value;
+    var f=$('sPhoto').files[0];
+    if(!name){alert('Введіть назву квітки.');return;}
+    if(!$('sPrice').value){alert('Вкажіть ціну в грн.');return;}
+    if(!f){alert('Додайте фото квітки.');return;}
     var url=URL.createObjectURL(f);
     var im=new Image();
     im.onload=function(){
       var max=900,w=im.width,h=im.height;
       if(w>max||h>max){var k=Math.min(max/w,max/h);w=Math.max(1,Math.round(w*k));h=Math.max(1,Math.round(h*k));}
-      var c=document.createElement('canvas');c.width=w;c.height=h;
-      c.getContext('2d').drawImage(im,0,0,w,h);
-      state[cat].push({n:name,d:desc,img:c.toDataURL('image/jpeg',0.72)});
+      var cv=document.createElement('canvas');cv.width=w;cv.height=h;
+      cv.getContext('2d').drawImage(im,0,0,w,h);
+      state.stock.push({id:'f'+Date.now().toString(36)+Math.floor(Math.random()*1e4),cat:c,n:name,price:price,total:qty,sold:0,img:cv.toDataURL('image/jpeg',0.72)});
       saveDraft();render();
-      $('name').value='';$('desc').value='';$('photo').value='';$('preview').hidden=true;
+      $('sName').value='';$('sPrice').value='';$('sQty').value='1';$('sPhoto').value='';$('sPreview').hidden=true;
       URL.revokeObjectURL(url);
     };
-    im.onerror=function(){alert('Не вдалося прочитати фото.');};
+    im.onerror=function(){alert('Не вдалося прочитати фото.');URL.revokeObjectURL(url);};
     im.src=url;
   });
   $('pubForm').addEventListener('submit',function(e){

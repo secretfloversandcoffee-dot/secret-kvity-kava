@@ -160,7 +160,13 @@ footer{text-align:center;padding:30px 20px;color:var(--muted);border-top:1px sol
   .fd-body{padding:16px 20px 16px 0}
   .fd-body h3{font-size:25px;margin-bottom:4px;color:var(--accent)}
   .fd-meta{font-size:15px;color:var(--gold);font-weight:600;margin:0 0 8px}
-  .fd-body p:last-child{font-size:16px;color:var(--muted);margin:0}
+  .fd-body p#fdDesc{font-size:16px;color:var(--muted);margin:0}
+  .fd-stock{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}
+  .fd-stock[hidden]{display:none}
+  .fd-stock span{font-size:14px;padding:4px 12px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:var(--surface)}
+  .fd-stock .fd-rem{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:600}
+  .fd-stock .fd-rem.out{background:#c0566b;border-color:#c0566b}
+  .gf-empty{padding:20px 16px;text-align:center;color:var(--muted);font-size:16px}
   @media(max-width:560px){.fd-card{flex-direction:column;gap:0}.fd-card img{width:100%;height:180px}.fd-body{padding:14px 18px 18px}}
 
   /* ---- статистика Google Maps ---- */
@@ -434,6 +440,7 @@ footer{text-align:center;padding:30px 20px;color:var(--muted);border-top:1px sol
           <h3 id="fdName"></h3>
           <p class="fd-meta" id="fdMeta"></p>
           <p id="fdDesc"></p>
+          <p class="fd-stock" id="fdStock" hidden></p>
         </div>
       </div>
     </div>
@@ -527,9 +534,12 @@ footer{text-align:center;padding:30px 20px;color:var(--muted);border-top:1px sol
 
   /* ---------- меню ---------- */
   var COFFEE_DATA=null;
+  var STOCK_DATA=null;
   var COFFEE_DEFAULT=[{id:"espresso",n:"Еспресо",sub:"30 мл · насичений",d:"Короткий інтенсивний постріл із золотистою кремкою",vessel:"demitasse",layers:[{type:"espresso",amount:0.72}],crema:true},{id:"americano",n:"Американо",sub:"240 мл · м’який",d:"Еспресо, розбавлене гарячою водою",vessel:"glass-mug",layers:[{type:"water",amount:0.54},{type:"espresso",amount:0.24}],crema:true,blend:0.9},{id:"cappuccino",n:"Капучино",sub:"180 мл · оксамитове",d:"Еспресо зі спіненим молоком і піною",vessel:"cup",layers:[{type:"espresso",amount:0.3},{type:"milk",amount:0.44}],foam:0.14,art:"heart"},{id:"latte",n:"Лате",sub:"300 мл · ніжне",d:"Еспресо з великою кількістю спіненого молока",vessel:"tall-glass",layers:[{type:"espresso",amount:0.25},{type:"milk",amount:0.51}],foam:0.11,blend:0.15,art:"heart"},{id:"flatwhite",n:"Флет-вайт",sub:"160 мл · кавовий характер",d:"Подвійний еспресо з тонким шаром шовковистого молока",vessel:"cup",layers:[{type:"espresso",amount:0.4},{type:"milk",amount:0.46}],foam:0.05,blend:0.3},{id:"raf",n:"Трояндовий раф",sub:"250 мл · авторський",d:"Еспресо з вершками та трояндовим сиропом — фірмовий напій Secret",vessel:"cup",layers:[{type:"espresso",amount:0.24},{type:"cream",amount:0.56}],foam:0.1,blend:0.2,art:"heart"},{id:"mocha",n:"Мокачино",sub:"280 мл · шоколадний",d:"Еспресо з гарячим шоколадом і молочною піною",vessel:"tall-glass",layers:[{type:"choco",amount:0.18},{type:"espresso",amount:0.24},{type:"milk",amount:0.42}],foam:0.08},{id:"cocoa",n:"Какао",sub:"250 мл · без кофеїну",d:"Густе какао на молоці з ніжною пінкою",vessel:"cup",layers:[{type:"choco",amount:0.62},{type:"milk",amount:0.16}],foam:0.12,art:"heart"},{id:"matcha",n:"Матча-лате",sub:"300 мл · без кофеїну",d:"Японська матча, збита з молоком до ніжної зеленої піни",vessel:"tall-glass",layers:[{type:"matcha",amount:0.38},{type:"milk",amount:0.44}],foam:0.1}];
   fetch('menu.json?t='+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
     if(d&&Array.isArray(d.coffee)&&d.coffee.length)COFFEE_DATA=d.coffee;
+    STOCK_DATA=(d&&Array.isArray(d.stock))?d.stock:[];
+    if(window.SecretFolders&&window.SecretFolders.refresh)window.SecretFolders.refresh();
   }).catch(function(){});
   function esc(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML;}
   var VESSELS={
@@ -652,6 +662,7 @@ footer{text-align:center;padding:30px 20px;color:var(--muted);border-top:1px sol
       if(pb)pb.scrollIntoView({behavior:reduced?'auto':'smooth',block:'start'});
     }
   };
+  window.SecretStock={list:function(){return STOCK_DATA||[];}};
 })();
 </script>
 <script>
@@ -873,6 +884,7 @@ function GlassFolder(opts){
     b.addEventListener('click',function(){if(opts.onFileSelect)opts.onFileSelect(f,v);});
     wrap.appendChild(b);filesBox.appendChild(wrap);
   });
+  if(!files.length){var em=document.createElement('div');em.className='gf-empty';em.textContent='Поки порожньо';filesBox.appendChild(em);}
   var open=false;
   function setOpen(n){
     open=n;
@@ -923,24 +935,17 @@ var GF_RECIPES={
   tulips:{style:'marble',colors:['#170b09','#3c1c14','#8a4030','#241109','#e0785a','#f2b09a','#fde8df'],scale:.68,warp:3.3,angle:1.4,gloss:.52,veins:.5},
   daisies:{style:'marble',colors:['#101208','#2c3318','#5f7a3a','#181c10','#d9c25a','#f0e3a0','#fbf6dc'],scale:.7,warp:3.4,angle:2.2,gloss:.5,veins:.5}
 };
-var GF_GROUPS=[
-  {label:'Троянди',art:GF_RECIPES.roses,seed:5,img:FL_IMG.roses,files:[
-    {name:'Червоні троянди',meta:'від 1 200 ₴',d:'Класичний букет із 15 червоних троянд — символ кохання.'},
-    {name:'Ніжний мікс',meta:'від 1 450 ₴',d:'Червоні та рожеві троянди з евкаліптом у крем-папері.'},
-    {name:'Рожева хмара',meta:'від 1 600 ₴',d:'21 рожева троянда з гіпсофілою — повітряний букет.'}]},
-  {label:'Піони',art:GF_RECIPES.peonies,seed:12,img:FL_IMG.peonies,files:[
-    {name:'Рожеві піони',meta:'від 1 800 ₴',d:'Пухкі рожеві піони — сезонний фаворит букетів.'},
-    {name:'Білі піони',meta:'від 1 950 ₴',d:'Ніжні білі піони з зеленню для весільних композицій.'},
-    {name:'Піоновий мікс',meta:'від 2 100 ₴',d:'Рожеві та білі піони разом — розкішний об’єм.'}]},
-  {label:'Тюльпани',art:GF_RECIPES.tulips,seed:8,img:FL_IMG.tulips,files:[
-    {name:'Весняні тюльпани',meta:'від 750 ₴',d:'25 тюльпанів мікс — яскравий весняний настрій.'},
-    {name:'Коралові тюльпани',meta:'від 850 ₴',d:'Ніжні коралові тюльпани у крем-папері.'},
-    {name:'Білі тюльпани',meta:'від 900 ₴',d:'Чисті білі тюльпани — лаконічна елегантність.'}]},
-  {label:'Ромашки',art:GF_RECIPES.daisies,seed:19,img:FL_IMG.daisies,files:[
-    {name:'Ромашкове поле',meta:'від 650 ₴',d:'Оберемок ромашок із зеленню — тепло літа.'},
-    {name:'Ромашки з трояндами',meta:'від 950 ₴',d:'Ромашки та рожеві троянди — грайливий мікс.'},
-    {name:'Сонячний букет',meta:'від 1 050 ₴',d:'Ромашки з сонячними акцентами та евкаліптом.'}]}
+var GF_CATS=[
+  {key:'roses',label:'Троянди',art:GF_RECIPES.roses,seed:5,img:FL_IMG.roses},
+  {key:'peonies',label:'Піони',art:GF_RECIPES.peonies,seed:12,img:FL_IMG.peonies},
+  {key:'tulips',label:'Тюльпани',art:GF_RECIPES.tulips,seed:8,img:FL_IMG.tulips},
+  {key:'daisies',label:'Ромашки',art:GF_RECIPES.daisies,seed:19,img:FL_IMG.daisies}
 ];
+function stockList(){return (window.SecretStock&&window.SecretStock.list())||[];}
+function rem(it){return Math.max(0,(it.total||0)-(it.sold||0));}
+function catItems(key){return stockList().filter(function(it){return it.cat===key;});}
+function catRem(key){return catItems(key).reduce(function(s,it){return s+rem(it);},0);}
+function money(v){return (Math.round(+v)||0)+' ₴';}
 var foldersBuilt=false,folderInsts=[];
 function folderWidth(){
   var mount=document.getElementById('folderMount');
@@ -949,29 +954,54 @@ function folderWidth(){
   if(mw>=560)return Math.min(300,Math.floor((mw-26)/2));
   return Math.min(340,mw);
 }
-function flowerShow(g,f){
-  var img=document.getElementById('fdImg'),nm=document.getElementById('fdName'),mt=document.getElementById('fdMeta'),ds=document.getElementById('fdDesc');
-  if(img){img.src=g.img;img.alt=f.name;}
-  if(nm)nm.textContent=f.name;
-  if(mt)mt.textContent=f.meta||'';
-  if(ds)ds.textContent=f.d||'';
+function flowerShow(g,it){
+  var img=document.getElementById('fdImg'),nm=document.getElementById('fdName'),mt=document.getElementById('fdMeta'),ds=document.getElementById('fdDesc'),st=document.getElementById('fdStock');
+  if(!it){
+    if(img){img.src=g.img;img.alt=g.label;}
+    if(nm)nm.textContent='Скоро тут будуть квіти';
+    if(mt)mt.textContent='';
+    if(ds)ds.textContent='Ми вже готуємо свіжі поставки — зазирніть трохи згодом.';
+    if(st)st.hidden=true;
+    return;
+  }
+  var r=rem(it),t=it.total||0,s=it.sold||0;
+  if(img){img.src=it.img||g.img;img.alt=it.n;}
+  if(nm)nm.textContent=it.n;
+  if(mt)mt.textContent=money(it.price)+' за шт';
+  if(ds)ds.textContent=it.d||'';
+  if(st){
+    st.hidden=false;
+    st.innerHTML='<span class="fd-rem'+(r>0?'':' out')+'">Залишилось: '+r+' шт</span><span>Всього: '+t+'</span><span>Продано: '+s+'</span>';
+  }
 }
 function buildFolders(){
   if(foldersBuilt)return;
   var mount=document.getElementById('folderMount');
   if(!mount)return;
   var w=folderWidth();
-  GF_GROUPS.forEach(function(g,gi){
+  GF_CATS.forEach(function(g,gi){
+    var items=catItems(g.key);
+    var files=items.map(function(it){return {name:it.n,meta:money(it.price)+' · зал. '+rem(it),d:it.d||'',_it:it};});
+    var r=catRem(g.key);
     var inst=GlassFolder({
-      label:g.label,meta:g.files.length+' букети',unit:'букетів',art:g.art,seed:g.seed,
-      files:g.files,width:w,appearDelay:gi*140,
-      onFileSelect:function(f){flowerShow(g,f);}
+      label:g.label,meta:r>0?r+' шт':'порожньо',unit:'шт',art:g.art,seed:g.seed,
+      files:files,width:w,appearDelay:gi*140,
+      onFileSelect:function(f){flowerShow(g,f._it);}
     });
     mount.appendChild(inst.el);
     folderInsts.push(inst);
   });
   foldersBuilt=true;
-  flowerShow(GF_GROUPS[0],GF_GROUPS[0].files[0]);
+  var first=null,fg=null;
+  for(var i=0;i<GF_CATS.length&&!first;i++){var its=catItems(GF_CATS[i].key);if(its.length){first=its[0];fg=GF_CATS[i];}}
+  flowerShow(fg||GF_CATS[0],first);
+}
+function refreshFolders(){
+  var mount=document.getElementById('folderMount');
+  if(mount)mount.innerHTML='';
+  folderInsts=[];foldersBuilt=false;
+  var fr=document.getElementById('folderRow');
+  if(fr&&!fr.hidden)buildFolders();
 }
 var gfResizeT=0;
 window.addEventListener('resize',function(){
@@ -979,7 +1009,7 @@ window.addEventListener('resize',function(){
   clearTimeout(gfResizeT);
   gfResizeT=setTimeout(function(){var w=folderWidth();folderInsts.forEach(function(f){f.setWidth(w);});},150);
 });
-window.SecretFolders={show:function(){buildFolders();}};
+window.SecretFolders={show:function(){buildFolders();},refresh:refreshFolders};
 
 /* ---------- PeakChart ---------- */
 var CW=540,CH=696,CR=56,HN=CH/CW,RN=CR/CW,BX=.32*CW,BY=.16*CW;
