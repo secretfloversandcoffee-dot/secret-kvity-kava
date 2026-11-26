@@ -12,15 +12,29 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Marck Script','Bad Script',cursive;font-size:20px;background:var(--bg);color:var(--text);line-height:1.5;padding:30px 18px 60px}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+  ::-webkit-scrollbar-thumb{background:var(--accent);border-radius:999px;border:2px solid var(--bg)}
+  ::-webkit-scrollbar-thumb:hover{background:var(--accent-dark)}
   .wrap{max-width:1000px;margin:0 auto}
   h1{font-size:34px;margin-bottom:6px}
   h2{font-size:26px;margin-bottom:14px}
   .sub{color:var(--muted);font-size:17px;margin-bottom:26px}
   a{color:var(--accent-dark)}
   .panel{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:30px 26px;margin-bottom:26px;box-shadow:0 10px 30px rgba(60,30,20,.07)}
-  .tabs{display:flex;gap:8px;margin-bottom:20px}
-  .tab{background:none;border:1px solid var(--line);color:var(--muted);font-family:inherit;font-size:19px;padding:8px 20px;border-radius:999px;cursor:pointer}
+  .tabs{display:flex;gap:8px;margin-bottom:16px;align-items:center;flex-wrap:wrap}
+  .tab{background:none;border:1px solid var(--line);color:var(--muted);font-family:inherit;font-size:19px;padding:8px 22px;border-radius:999px;cursor:pointer}
   .tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .savechip{margin-left:auto;font-size:15px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 14px;transition:color .3s,border-color .3s}
+  .savechip.pulse{color:var(--teal);border-color:var(--teal)}
+  .crumb{font-size:18px;color:var(--muted);margin-bottom:12px}
+  .crumb b{color:var(--text)}
+  .folderrail{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+  .fchip{display:inline-flex;align-items:center;gap:9px;background:var(--bg);border:1px solid var(--line);color:var(--text);font-family:inherit;font-size:17px;padding:8px 16px;border-radius:14px;cursor:pointer;transition:border-color .2s,transform .2s}
+  .fchip:hover{transform:translateY(-2px)}
+  .fchip.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .sw{width:20px;height:20px;border-radius:7px;flex:none}
+  .ct{font-size:14px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:1px 9px}
   form.row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start}
   input[type=text],input[type=password],textarea{flex:1;min-width:200px;background:var(--bg);border:1px solid var(--line);color:var(--text);font-family:inherit;font-size:17px;padding:10px 12px;border-radius:10px;outline:none}
   input:focus,textarea:focus{border-color:var(--accent)}
@@ -38,16 +52,14 @@
   .btn.small{font-size:15px;padding:7px 14px}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
   .item{position:relative;background:var(--bg);border:1px solid var(--line);border-radius:16px;overflow:hidden}
-  .item img{width:100%;height:150px;object-fit:cover;display:block}
+  .item img.ph{width:100%;height:150px;object-fit:cover;display:block}
+  .phreplace{display:block;text-align:center;font-size:14px;color:var(--muted);padding:5px 0;border-bottom:1px dashed var(--line);cursor:pointer}
+  .phreplace:hover{color:var(--accent-dark)}
+  .phreplace input{display:none}
   .item .b{padding:14px 16px 16px}
-  .item h3{font-size:21px;margin-bottom:4px}
-  .item p{font-size:16px;color:var(--muted)}
   .del{display:inline-block;margin-top:8px;background:none;border:1px solid var(--line);color:var(--muted);font-family:inherit;font-size:15px;padding:4px 14px;border-radius:999px;cursor:pointer}
   .del:hover{color:#e28a97;border-color:#e28a97}
   .hint{color:var(--muted);font-size:16px;margin:4px 0 0;width:100%}
-  .status{font-size:17px;margin-top:12px;min-height:24px}
-  .ok{color:var(--teal)}
-  .err{color:#e28a97}
   .small{font-size:15px;color:var(--muted)}
   [hidden]{display:none!important}
   .item .b input,.item .b textarea{display:block;width:100%;margin-bottom:8px;min-width:0;background:var(--surface);font-size:16px}
@@ -60,7 +72,6 @@
   .stat.rem b{color:var(--teal)}
   .stat.rem.out b{color:#e28a97}
   .srow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
-  .srow label{font-size:15px;color:var(--muted)}
   .srow input[type=number]{width:80px}
   .stocksum{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 16px}
   .stocksum .chip{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:6px 16px;font-size:16px}
@@ -70,7 +81,7 @@
 <body>
 <div class="wrap">
   <h1>Адмін-панель · Secret</h1>
-  <p class="sub">Склад квітів і кавове меню сайту <a href="https://secretfloversandcoffee-dot.github.io/secret-kvity-kava/" target="_blank" rel="noopener">secret-kvity-kava</a></p>
+  <p class="sub">Розділ → папка → характеристики. Зміни зберігаються автоматично й одразу видно на сайті в цьому браузері.</p>
 
   <div class="panel" id="loginPanel">
     <h2>Вхід</h2>
@@ -78,54 +89,35 @@
       <input type="text" id="loginUser" placeholder="Пошта або юзернейм" autocomplete="username">
       <input type="password" id="loginPass" placeholder="Пароль" autocomplete="current-password">
       <button class="btn" type="submit">Увійти</button>
-      <p class="hint err" id="loginErr"></p>
+      <p class="hint err" id="loginErr" style="color:#e28a97"></p>
     </form>
   </div>
 
   <div id="mainPanel" hidden>
     <div class="panel">
       <div class="tabs">
-        <button class="tab on" type="button" data-tab="stock">Квіти · склад</button>
-        <button class="tab" type="button" data-tab="coffee">Кава</button>
-        <span class="small" style="align-self:center;margin-left:auto" id="draftNote"></span>
+        <button class="tab on" type="button" data-sec="flowers">Квіти</button>
+        <button class="tab" type="button" data-sec="coffee">Кава</button>
+        <span class="savechip" id="saveChip">Автозбереження</span>
       </div>
 
-      <div id="stockBlock">
-        <div class="stocksum" id="stockSum"></div>
-        <form class="row" id="stockForm">
-          <label class="file-label">Фото *<input type="file" id="sPhoto" accept="image/*" hidden></label>
-          <img id="sPreview" alt="Обране фото" hidden>
-          <input type="text" id="sName" placeholder="Назва квітки *">
-          <input type="number" id="sPrice" min="0" step="1" placeholder="Ціна, грн *">
-          <select id="sCat" aria-label="Папка">
-            <option value="roses">Троянди</option>
-            <option value="peonies">Піони</option>
-            <option value="tulips">Тюльпани</option>
-            <option value="daisies">Ромашки</option>
-          </select>
-          <input type="number" id="sQty" min="1" step="1" value="1" aria-label="Кількість, шт">
-          <button class="btn" type="submit">Додати на склад</button>
-          <p class="hint" id="stockHint">Фото, назва, ціна за штуку, папка та кількість — залишок одразу з’явиться на сайті.</p>
-        </form>
-        <div class="grid" id="stockList" style="margin-top:16px"></div>
-      </div>
+      <p class="crumb" id="crumb"></p>
+      <div class="folderrail" id="folderRail"></div>
 
-      <div id="coffeeBlock" hidden>
-        <h3 style="margin:0 0 4px">Кавове меню (наливання)</h3>
-        <p class="hint">Ці напої показуються на сайті з анімацією наливання — редагуйте назву та опис.</p>
-        <div class="grid" id="coffeeList" style="margin-top:10px"></div>
-      </div>
-    </div>
+      <div class="stocksum" id="stockSum"></div>
 
-    <div class="panel">
-      <h2>Публікація</h2>
-      <p class="sub" style="margin-bottom:12px">Зміни потрапляють на сайт тільки після натискання «Опублікувати меню».</p>
-      <form class="row" id="pubForm">
-        <input type="password" id="token" placeholder="GitHub токен (зберігається тільки в цьому браузері)" autocomplete="off">
-        <button class="btn" type="submit" id="pubBtn">Опублікувати меню</button>
+      <form class="row" id="addForm">
+        <label class="file-label">Фото *<input type="file" id="sPhoto" accept="image/*" hidden></label>
+        <img id="sPreview" alt="Обране фото" hidden>
+        <input type="text" id="sName" placeholder="Назва квітки *">
+        <input type="number" id="sPrice" min="0" step="1" placeholder="Ціна, грн *">
+        <input type="number" id="sQty" min="1" step="1" value="1" aria-label="Кількість, шт">
+        <input type="text" id="sDesc" placeholder="Опис (необов’язково)">
+        <button class="btn" type="submit">Додати в папку</button>
+        <p class="hint" id="addHint">Фото, назва та ціна обов’язкові. Кількість — скільки штук кладете в папку.</p>
       </form>
-      <p class="hint">Токен: GitHub → Settings → Developer settings → Fine-grained tokens → Generate new → тільки репозиторій secret-kvity-kava → дозвіл Contents: Read and write.</p>
-      <p class="status" id="status"></p>
+
+      <div class="grid" id="itemList" style="margin-top:16px"></div>
     </div>
 
     <div class="panel">
@@ -142,12 +134,19 @@
 
 <script>
 (function(){
-  var LS_AUTH='secret_admin_auth', LS_ON='secret_admin_on', LS_TOKEN='secret_gh_token', LS_DRAFT='secret_admin_draft';
+  var LS_AUTH='secret_admin_auth', LS_ON='secret_admin_on', LS_DRAFT='secret_admin_draft', LS_LIVE='secret_live_menu';
   var DEF_USER='admin', DEF_PASS='secret2026';
-  var OWNER='secretfloversandcoffee-dot', REPO='secret-kvity-kava';
-  var CATS={roses:{label:'Троянди',color:'#c4677f'},peonies:{label:'Піони',color:'#d98ba3'},tulips:{label:'Тюльпани',color:'#e0785a'},daisies:{label:'Ромашки',color:'#a8933a'}};
-  var state={flowers:[],drinks:[],coffee:[],stock:[]}, cat='stock';
+  var CATS={
+    roses:{label:'Троянди',c1:'#7a2733',c2:'#e8a7b8'},
+    peonies:{label:'Піони',c1:'#7c4a5e',c2:'#f0bccb'},
+    tulips:{label:'Тюльпани',c1:'#8a4030',c2:'#f2b09a'},
+    daisies:{label:'Ромашки',c1:'#5f7a3a',c2:'#f0e3a0'}
+  };
+  var COFFEE_FOLDERS=[{key:'menu',label:'Кавове меню',c1:'#5c3a22',c2:'#d9a866'}];
+  var state={flowers:[],drinks:[],coffee:[],stock:[]};
+  var sec='flowers', folder='roses';
   function $(id){return document.getElementById(id);}
+  function esc(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML;}
   function sha256(txt){
     if(window.crypto&&crypto.subtle&&crypto.subtle.digest){
       return crypto.subtle.digest('SHA-256',new TextEncoder().encode(txt)).then(function(buf){
@@ -158,8 +157,8 @@
   }
   function loadAuth(){try{var a=JSON.parse(localStorage.getItem(LS_AUTH));if(a&&typeof a==='object'&&a.user&&a.hash)return a;}catch(e){}return null;}
   function isLogged(){return localStorage.getItem(LS_ON)==='1';}
-  function setStatus(txt,ok){var el=$('status');el.textContent=txt;el.className='status '+(ok?'ok':'err');}
   function rem(it){return Math.max(0,(it.total||0)-(it.sold||0));}
+  function grad(f){return 'linear-gradient(135deg,'+f.c1+','+f.c2+')';}
 
   $('loginForm').addEventListener('submit',function(e){
     e.preventDefault();
@@ -187,48 +186,109 @@
   function enter(){
     $('loginPanel').hidden=true;
     $('mainPanel').hidden=false;
-    if($('token').value){}else{$('token').value=localStorage.getItem(LS_TOKEN)||'';}
     loadState();
   }
   function loadState(){
-    fetch('menu.json?t='+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
-      if(d&&Array.isArray(d.flowers)&&Array.isArray(d.drinks)){state={flowers:d.flowers,drinks:d.drinks,coffee:Array.isArray(d.coffee)?d.coffee:[],stock:Array.isArray(d.stock)?d.stock:[]};saveDraft();}
-      else throw 0;
+    var d=loadDraft();
+    if(d&&(d.stock.length||d.coffee.length)){state=d;render();return;}
+    fetch('menu.json?t='+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){
+      if(j&&Array.isArray(j.flowers)&&Array.isArray(j.drinks)){
+        state={flowers:j.flowers,drinks:j.drinks,coffee:Array.isArray(j.coffee)?j.coffee:[],stock:Array.isArray(j.stock)?j.stock:[]};
+      }else throw 0;
+      saveDraft();
     }).catch(function(){
-      state=loadDraft();
+      if(d)state=d;
     }).then(render);
   }
   function loadDraft(){
-    try{var d=JSON.parse(localStorage.getItem(LS_DRAFT));if(d&&Array.isArray(d.flowers)&&Array.isArray(d.drinks))return {flowers:d.flowers,drinks:d.drinks,coffee:Array.isArray(d.coffee)?d.coffee:[],stock:Array.isArray(d.stock)?d.stock:[]};}catch(e){}
-    return {flowers:[],drinks:[],coffee:[],stock:[]};
+    try{
+      var d=JSON.parse(localStorage.getItem(LS_DRAFT));
+      if(d&&Array.isArray(d.flowers)&&Array.isArray(d.drinks))
+        return {flowers:d.flowers,drinks:d.drinks,coffee:Array.isArray(d.coffee)?d.coffee:[],stock:Array.isArray(d.stock)?d.stock:[]};
+    }catch(e){}
+    return null;
   }
-  function saveDraft(){try{localStorage.setItem(LS_DRAFT,JSON.stringify(state));}catch(e){}}
+  var chipTimer=null;
+  function saveDraft(){
+    try{
+      localStorage.setItem(LS_DRAFT,JSON.stringify(state));
+      localStorage.setItem(LS_LIVE,JSON.stringify({stock:state.stock,coffee:state.coffee}));
+      var chip=$('saveChip');
+      chip.textContent='Збережено ✓';chip.classList.add('pulse');
+      clearTimeout(chipTimer);
+      chipTimer=setTimeout(function(){chip.textContent='Автозбереження';chip.classList.remove('pulse');},1400);
+    }catch(e){}
+  }
+
+  function folders(){return sec==='flowers'?Object.keys(CATS).map(function(k){return {key:k,label:CATS[k].label,c1:CATS[k].c1,c2:CATS[k].c2};}):COFFEE_FOLDERS;}
+  function countIn(key){
+    if(sec==='flowers')return state.stock.filter(function(it){return it.cat===key;}).length;
+    return state.coffee.length;
+  }
 
   function render(){
-    var isStock=(cat==='stock');
-    $('stockBlock').hidden=!isStock;
-    $('coffeeBlock').hidden=isStock;
-    if(isStock)renderStock();else renderCoffee();
-    $('draftNote').textContent='Зміни збережено локально. Не забудьте опублікувати.';
+    [].forEach.call(document.querySelectorAll('.tab'),function(t){t.classList.toggle('on',t.getAttribute('data-sec')===sec);});
+    var fs=folders();
+    if(!fs.some(function(f){return f.key===folder;}))folder=fs[0].key;
+    var cur=fs.filter(function(f){return f.key===folder;})[0];
+    $('crumb').innerHTML=(sec==='flowers'?'Квіти':'Кава')+' → <b>'+esc(cur.label)+'</b>';
+    var rail=$('folderRail');rail.innerHTML='';
+    fs.forEach(function(f){
+      var b=document.createElement('button');b.type='button';b.className='fchip'+(f.key===folder?' on':'');
+      b.innerHTML='<span class="sw" style="background:'+grad(f)+'"></span>'+esc(f.label)+'<span class="ct">'+countIn(f.key)+'</span>';
+      b.onclick=function(){folder=f.key;render();};
+      rail.appendChild(b);
+    });
+    var isFl=(sec==='flowers');
+    $('addForm').hidden=!isFl;
+    $('stockSum').hidden=!isFl;
+    if(isFl){renderSum();renderFlowers();}
+    else renderCoffee();
   }
-  function renderStock(){
-    var sum=$('stockSum'),tot=0,sold=0,left=0;
-    state.stock.forEach(function(it){tot+=it.total||0;sold+=it.sold||0;left+=rem(it);});
-    sum.innerHTML='<span class="chip">На складі: <b>'+left+' шт</b></span><span class="chip">Продано: <b>'+sold+' шт</b></span><span class="chip">Всього було: <b>'+tot+' шт</b></span><span class="chip">Позицій: <b>'+state.stock.length+'</b></span>';
-    var list=$('stockList');list.innerHTML='';
-    $('stockHint').textContent=state.stock.length?'Залишок = всього − продано. Сайт показує саме залишок.':'Поки порожньо — додайте першу квітку вище.';
-    state.stock.forEach(function(it,idx){
-      var c=CATS[it.cat]||CATS.roses;
+  function renderSum(){
+    var items=state.stock.filter(function(it){return it.cat===folder;});
+    var tot=0,sold=0,left=0;
+    items.forEach(function(it){tot+=it.total||0;sold+=it.sold||0;left+=rem(it);});
+    $('stockSum').innerHTML='<span class="chip">На складі: <b>'+left+' шт</b></span><span class="chip">Продано: <b>'+sold+' шт</b></span><span class="chip">Всього було: <b>'+tot+' шт</b></span>';
+    $('addHint').textContent=items.length?'Залишок = всього − продано. Сайт показує саме залишок.':'Папка поки порожня — додайте першу квітку вище.';
+  }
+  function readPhoto(f,done){
+    var url=URL.createObjectURL(f), im=new Image();
+    im.onload=function(){
+      var max=900,w=im.width,h=im.height;
+      if(w>max||h>max){var k=Math.min(max/w,max/h);w=Math.max(1,Math.round(w*k));h=Math.max(1,Math.round(h*k));}
+      var cv=document.createElement('canvas');cv.width=w;cv.height=h;
+      cv.getContext('2d').drawImage(im,0,0,w,h);
+      URL.revokeObjectURL(url);
+      done(cv.toDataURL('image/jpeg',0.72));
+    };
+    im.onerror=function(){URL.revokeObjectURL(url);alert('Не вдалося прочитати фото.');};
+    im.src=url;
+  }
+  function renderFlowers(){
+    var list=$('itemList');list.innerHTML='';
+    var items=[];
+    state.stock.forEach(function(it,idx){if(it.cat===folder)items.push({it:it,idx:idx});});
+    if(!items.length){list.innerHTML='<p class="hint">У цій папці поки немає квітів.</p>';return;}
+    items.forEach(function(o){
+      var it=o.it,idx=o.idx,c=CATS[it.cat]||CATS.roses;
       var el=document.createElement('div');el.className='item';
-      if(it.img){var ph=document.createElement('img');ph.src=it.img;ph.alt=it.n||'';el.appendChild(ph);}
+      var ph=document.createElement('img');ph.className='ph';ph.src=it.img||'';ph.alt=it.n||'';el.appendChild(ph);
+      var rep=document.createElement('label');rep.className='phreplace';rep.textContent='Замінити фото';
+      var fi=document.createElement('input');fi.type='file';fi.accept='image/*';
+      fi.addEventListener('change',function(){var f=fi.files[0];if(f)readPhoto(f,function(data){state.stock[idx].img=data;saveDraft();render();});});
+      rep.appendChild(fi);el.appendChild(rep);
       var b=document.createElement('div');b.className='b';
-      var badge=document.createElement('span');badge.className='badge';badge.style.background=c.color;badge.textContent=c.label;b.appendChild(badge);
+      var badge=document.createElement('span');badge.className='badge';badge.style.background=grad(c);badge.textContent=c.label;b.appendChild(badge);
       var nm=document.createElement('input');nm.type='text';nm.value=it.n||'';nm.placeholder='Назва *';
       nm.addEventListener('input',function(){state.stock[idx].n=nm.value.trim();saveDraft();});
       b.appendChild(nm);
       var pr=document.createElement('input');pr.type='number';pr.min='0';pr.step='1';pr.value=it.price||0;pr.placeholder='Ціна, грн';
       pr.addEventListener('input',function(){state.stock[idx].price=Math.max(0,parseInt(pr.value,10)||0);saveDraft();});
       b.appendChild(pr);
+      var ds=document.createElement('textarea');ds.rows=2;ds.value=it.d||'';ds.placeholder='Опис (необов’язково)';
+      ds.addEventListener('input',function(){state.stock[idx].d=ds.value.trim();saveDraft();});
+      b.appendChild(ds);
       var r=rem(it);
       var stats=document.createElement('div');stats.className='stats';
       stats.innerHTML='<div class="stat"><b>'+(it.total||0)+'</b><span>всього</span></div><div class="stat"><b>'+(it.sold||0)+'</b><span>продано</span></div><div class="stat rem'+(r>0?'':' out')+'"><b>'+r+'</b><span>залишок</span></div>';
@@ -250,27 +310,34 @@
     });
   }
   function renderCoffee(){
-    var list=$('coffeeList');
-    list.innerHTML='';
+    var list=$('itemList');list.innerHTML='';
     if(!state.coffee.length){list.innerHTML='<p class="hint">Кавових напоїв поки немає.</p>';return;}
     state.coffee.forEach(function(it,idx){
       var el=document.createElement('div');el.className='item';
       var b=document.createElement('div');b.className='b';
+      var badge=document.createElement('span');badge.className='badge';badge.style.background=grad(COFFEE_FOLDERS[0]);badge.textContent='Наливання';b.appendChild(badge);
       var nm=document.createElement('input');nm.type='text';nm.value=it.n||'';nm.placeholder='Назва *';
       nm.addEventListener('input',function(){state.coffee[idx].n=nm.value.trim();saveDraft();});
+      b.appendChild(nm);
+      var sb=document.createElement('input');sb.type='text';sb.value=it.sub||'';sb.placeholder='Підпис (об’єм · характер)';
+      sb.addEventListener('input',function(){state.coffee[idx].sub=sb.value.trim();saveDraft();});
+      b.appendChild(sb);
       var ds=document.createElement('textarea');ds.rows=2;ds.value=it.d||'';ds.placeholder='Опис (необов’язково)';
       ds.addEventListener('input',function(){state.coffee[idx].d=ds.value.trim();saveDraft();});
+      b.appendChild(ds);
+      var note=document.createElement('p');note.className='hint';note.style.margin='0 0 8px';note.textContent='Посудина та шари наливання задані рецептом.';
+      b.appendChild(note);
       var del=document.createElement('button');del.type='button';del.className='del';del.textContent='Видалити';
       del.onclick=function(){state.coffee.splice(idx,1);saveDraft();render();};
-      b.appendChild(nm);b.appendChild(ds);b.appendChild(del);
+      b.appendChild(del);
       el.appendChild(b);
       list.appendChild(el);
     });
   }
   [].forEach.call(document.querySelectorAll('.tab'),function(t){
     t.addEventListener('click',function(){
-      cat=t.getAttribute('data-tab');
-      [].forEach.call(document.querySelectorAll('.tab'),function(x){x.className=x===t?'tab on':'tab';});
+      sec=t.getAttribute('data-sec');
+      folder=sec==='flowers'?'roses':'menu';
       render();
     });
   });
@@ -278,49 +345,23 @@
     var f=this.files[0],pv=$('sPreview');
     if(f){pv.src=URL.createObjectURL(f);pv.hidden=false;}else{pv.hidden=true;}
   });
-  $('stockForm').addEventListener('submit',function(e){
+  $('addForm').addEventListener('submit',function(e){
     e.preventDefault();
     var name=$('sName').value.trim();
-    var price=Math.max(0,parseInt($('sPrice').value,10)||0);
     var qty=Math.max(1,parseInt($('sQty').value,10)||1);
-    var c=$('sCat').value;
+    var desc=$('sDesc').value.trim();
     var f=$('sPhoto').files[0];
     if(!name){alert('Введіть назву квітки.');return;}
     if(!$('sPrice').value){alert('Вкажіть ціну в грн.');return;}
+    var price=Math.max(0,parseInt($('sPrice').value,10)||0);
     if(!f){alert('Додайте фото квітки.');return;}
-    var url=URL.createObjectURL(f);
-    var im=new Image();
-    im.onload=function(){
-      var max=900,w=im.width,h=im.height;
-      if(w>max||h>max){var k=Math.min(max/w,max/h);w=Math.max(1,Math.round(w*k));h=Math.max(1,Math.round(h*k));}
-      var cv=document.createElement('canvas');cv.width=w;cv.height=h;
-      cv.getContext('2d').drawImage(im,0,0,w,h);
-      state.stock.push({id:'f'+Date.now().toString(36)+Math.floor(Math.random()*1e4),cat:c,n:name,price:price,total:qty,sold:0,img:cv.toDataURL('image/jpeg',0.72)});
+    readPhoto(f,function(data){
+      var it={id:'f'+Date.now().toString(36)+Math.floor(Math.random()*1e4),cat:folder,n:name,price:price,total:qty,sold:0,img:data};
+      if(desc)it.d=desc;
+      state.stock.push(it);
       saveDraft();render();
-      $('sName').value='';$('sPrice').value='';$('sQty').value='1';$('sPhoto').value='';$('sPreview').hidden=true;
-      URL.revokeObjectURL(url);
-    };
-    im.onerror=function(){alert('Не вдалося прочитати фото.');URL.revokeObjectURL(url);};
-    im.src=url;
-  });
-  $('pubForm').addEventListener('submit',function(e){
-    e.preventDefault();
-    var t=$('token').value.trim();
-    if(!t){setStatus('Вставте GitHub токен у поле вище.',false);return;}
-    try{localStorage.setItem(LS_TOKEN,t);}catch(err){}
-    setStatus('Публікую…',false);
-    var json=JSON.stringify(state);
-    var content=btoa(unescape(encodeURIComponent(json)));
-    var api='https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/menu.json';
-    fetch(api,{headers:{'Authorization':'Bearer '+t,'Accept':'application/vnd.github+json'}})
-      .then(function(r){if(!r.ok)throw new Error('GET '+r.status);return r.json();})
-      .then(function(d){
-        var body={message:'Оновлення меню',content:content,branch:'main'};
-        if(d&&d.sha)body.sha=d.sha;
-        return fetch(api,{method:'PUT',headers:{'Authorization':'Bearer '+t,'Accept':'application/vnd.github+json','Content-Type':'application/json'},body:JSON.stringify(body)});
-      })
-      .then(function(r){if(!r.ok)throw new Error('PUT '+r.status);setStatus('Опубліковано! Сайт оновиться за 1–10 хвилин.',true);})
-      .catch(function(err){setStatus('Помилка публікації: '+err.message+' — перевірте токен.',false);});
+      $('sName').value='';$('sPrice').value='';$('sQty').value='1';$('sDesc').value='';$('sPhoto').value='';$('sPreview').hidden=true;
+    });
   });
   $('authForm').addEventListener('submit',function(e){
     e.preventDefault();

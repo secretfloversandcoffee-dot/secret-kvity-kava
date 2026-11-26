@@ -538,11 +538,21 @@ footer{text-align:center;padding:30px 20px;color:var(--muted);border-top:1px sol
   var COFFEE_DATA=null;
   var STOCK_DATA=null;
   var COFFEE_DEFAULT=[{id:"espresso",n:"Еспресо",sub:"30 мл · насичений",d:"Короткий інтенсивний постріл із золотистою кремкою",vessel:"demitasse",layers:[{type:"espresso",amount:0.72}],crema:true},{id:"americano",n:"Американо",sub:"240 мл · м’який",d:"Еспресо, розбавлене гарячою водою",vessel:"glass-mug",layers:[{type:"water",amount:0.54},{type:"espresso",amount:0.24}],crema:true,blend:0.9},{id:"cappuccino",n:"Капучино",sub:"180 мл · оксамитове",d:"Еспресо зі спіненим молоком і піною",vessel:"cup",layers:[{type:"espresso",amount:0.3},{type:"milk",amount:0.44}],foam:0.14,art:"heart"},{id:"latte",n:"Лате",sub:"300 мл · ніжне",d:"Еспресо з великою кількістю спіненого молока",vessel:"tall-glass",layers:[{type:"espresso",amount:0.25},{type:"milk",amount:0.51}],foam:0.11,blend:0.15,art:"heart"},{id:"flatwhite",n:"Флет-вайт",sub:"160 мл · кавовий характер",d:"Подвійний еспресо з тонким шаром шовковистого молока",vessel:"cup",layers:[{type:"espresso",amount:0.4},{type:"milk",amount:0.46}],foam:0.05,blend:0.3},{id:"raf",n:"Трояндовий раф",sub:"250 мл · авторський",d:"Еспресо з вершками та трояндовим сиропом — фірмовий напій Secret",vessel:"cup",layers:[{type:"espresso",amount:0.24},{type:"cream",amount:0.56}],foam:0.1,blend:0.2,art:"heart"},{id:"mocha",n:"Мокачино",sub:"280 мл · шоколадний",d:"Еспресо з гарячим шоколадом і молочною піною",vessel:"tall-glass",layers:[{type:"choco",amount:0.18},{type:"espresso",amount:0.24},{type:"milk",amount:0.42}],foam:0.08},{id:"cocoa",n:"Какао",sub:"250 мл · без кофеїну",d:"Густе какао на молоці з ніжною пінкою",vessel:"cup",layers:[{type:"choco",amount:0.62},{type:"milk",amount:0.16}],foam:0.12,art:"heart"},{id:"matcha",n:"Матча-лате",sub:"300 мл · без кофеїну",d:"Японська матча, збита з молоком до ніжної зеленої піни",vessel:"tall-glass",layers:[{type:"matcha",amount:0.38},{type:"milk",amount:0.44}],foam:0.1}];
+  function applyLiveMenu(){
+    try{
+      var lv=JSON.parse(localStorage.getItem('secret_live_menu'));
+      if(lv&&typeof lv==='object'){
+        if(Array.isArray(lv.stock))STOCK_DATA=lv.stock;
+        if(Array.isArray(lv.coffee)&&lv.coffee.length)COFFEE_DATA=lv.coffee;
+      }
+    }catch(e){}
+    if(window.SecretFolders&&window.SecretFolders.refresh)window.SecretFolders.refresh();
+  }
   fetch('menu.json?t='+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
     if(d&&Array.isArray(d.coffee)&&d.coffee.length)COFFEE_DATA=d.coffee;
     STOCK_DATA=(d&&Array.isArray(d.stock))?d.stock:[];
-    if(window.SecretFolders&&window.SecretFolders.refresh)window.SecretFolders.refresh();
-  }).catch(function(){});
+  }).catch(function(){}).then(applyLiveMenu);
+  window.addEventListener('storage',function(e){if(e.key==='secret_live_menu')applyLiveMenu();});
   function esc(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML;}
   var VESSELS={
     'demitasse':{d:'M45 88 L155 88 L140 148 L60 148 Z M155 96 C182 96 182 128 155 130 M40 152 L160 152',box:{l:45,r:45,t:88,b:52},clip:'polygon(3px 0,107px 0,92px 100%,18px 100%)',ry:8,bl:60,body:'M45 88 L155 88 L140 148 Q100 156 60 148 Z'},
