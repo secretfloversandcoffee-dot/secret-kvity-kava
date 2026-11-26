@@ -166,7 +166,9 @@ footer{text-align:center;padding:30px 20px;color:var(--muted);border-top:1px sol
   .fd-stock span{font-size:14px;padding:4px 12px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:var(--surface)}
   .fd-stock .fd-rem{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:600}
   .fd-stock .fd-rem.out{background:#c0566b;border-color:#c0566b}
-  .gf-empty{padding:20px 16px;text-align:center;color:var(--muted);font-size:16px}
+  .gf-empty{position:absolute;left:34px;top:96px;width:272px;height:184px;display:flex;align-items:flex-start;justify-content:center;text-align:center;padding:12px 18px 0;color:#71717a;font-size:15px;border-radius:16px;background:linear-gradient(180deg,#ffffff,#f2f2f0);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 0 0 .5px rgba(0,0,0,.1);transform:translateY(var(--gf-lift));transition:transform .75s var(--gf-spring),opacity .5s ease;opacity:0;pointer-events:none}
+  .gf-root[data-open] .gf-empty{opacity:1}
+  .gf-root[data-tone="dark"] .gf-empty{background:linear-gradient(180deg,#2c2c30,#1c1c1f);color:rgba(250,250,250,.66);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 0 0 .5px rgba(255,255,255,.08)}
   @media(max-width:560px){.fd-card{flex-direction:column;gap:0}.fd-card img{width:100%;height:180px}.fd-body{padding:14px 18px 18px}}
 
   /* ---- статистика Google Maps ---- */
