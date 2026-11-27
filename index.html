@@ -1648,15 +1648,16 @@ if(gsMount){
     cx.clearRect(0,0,W,H);
     var light=lightMq.matches;
     var m=Math.min(W,H);
-    for(var i=0;i<BLOBS.length;i++){var b=BLOBS[i];var x=W*(b.ox+Math.sin(t*b.sx+b.ph)*b.ax),y=H*(b.oy+Math.cos(t*b.sy+b.ph)*b.ay),R=m*b.r;var g=cx.createRadialGradient(x,y,0,x,y,R);g.addColorStop(0,rgba(b.c,light?0.10:0.14));g.addColorStop(1,rgba(b.c,0));cx.fillStyle=g;cx.fillRect(x-R,y-R,R*2,R*2);}
+    for(var i=0;i<BLOBS.length;i++){var b=BLOBS[i];var x=W*(b.ox+Math.sin(t*b.sx+b.ph)*b.ax),y=H*(b.oy+Math.cos(t*b.sy+b.ph)*b.ay),R=m*b.r;var g=cx.createRadialGradient(x,y,0,x,y,R);g.addColorStop(0,rgba(b.c,light?0.13:0.17));g.addColorStop(1,rgba(b.c,0));cx.fillStyle=g;cx.fillRect(x-R,y-R,R*2,R*2);}
     var sp=46,off=(t*0.004)%sp;
-    cx.lineWidth=1;cx.strokeStyle=rgba(P.deep,light?0.055:0.085);
+    cx.lineWidth=1;cx.strokeStyle=rgba(P.deep,light?0.10:0.13);
     cx.beginPath();
     for(var x=-sp+off;x<W+sp;x+=sp){cx.moveTo(x,0);cx.lineTo(x,H);}
     for(var y=-sp+off;y<H+sp;y+=sp){cx.moveTo(0,y);cx.lineTo(W,y);}
     cx.stroke();
+    cx.fillStyle=rgba(P.deep,light?0.16:0.20);cx.beginPath();for(var gx=-sp+off;gx<W+sp;gx+=sp){for(var gy=-sp+off;gy<H+sp;gy+=sp){cx.moveTo(gx+1.6,gy);cx.arc(gx,gy,1.6,0,6.2832);}}cx.fill();
     var cols=[P.ac,"#d9b676","#86c3b6"];
-    for(var k=0;k<PET.length;k++){var q=PET[k];var py=((q.y0*H+t*q.vy)%(H+80))-40;var px=q.x0*W+Math.sin(t*q.sw+q.ph)*34;var rot=q.r0+t*q.vr;cx.save();cx.translate(px,py);cx.rotate(rot);cx.fillStyle=rgba(cols[q.c],light?0.07:0.10);cx.beginPath();cx.ellipse(0,0,q.r,q.r*0.62,0,0,6.2832);cx.fill();cx.restore();}
+    for(var k=0;k<PET.length;k++){var q=PET[k];var py=((q.y0*H+t*q.vy)%(H+80))-40;var px=q.x0*W+Math.sin(t*q.sw+q.ph)*34;var rot=q.r0+t*q.vr;cx.save();cx.translate(px,py);cx.rotate(rot);cx.fillStyle=rgba(cols[q.c],light?0.10:0.13);cx.beginPath();cx.ellipse(0,0,q.r,q.r*0.62,0,0,6.2832);cx.fill();cx.restore();}
   }
   function loop(ts){raf=0;if(document.hidden)return;if(ts-lastT>=33){lastT=ts;draw(ts);}raf=requestAnimationFrame(loop);}
   function kick(){if(!raf&&!reduce&&!document.hidden)raf=requestAnimationFrame(loop);}
